@@ -8,10 +8,41 @@ import (
 )
 
 func main() {
+	go client()
 	go server()
 
 	var a string
 	fmt.Scanln(&a)
+}
+
+/**
+ * Client for checing Rabbit MQ connection.
+ */
+func client() {
+
+	//Fetching the queue
+	conn, ch, q := getQueue()
+
+	//closig the connection and channel on defer
+	defer conn.Close()
+	defer ch.Close()
+
+	//begin receiving on the returned chan Delivery
+	//before any other operation on the Connection or Channel
+	msgs, err := ch.Consume(
+		q.Name, //queue string,
+		"",     //consumer string,
+		true,   //autoAck bool,
+		false,  //exclusive bool,
+		false,  //noLocal bool,
+		false,  //noWait bool,
+		nil)    //args amqp.Table)
+
+	failOnError(err, "Failed to register a consumer")
+
+	for msg := range msgs {
+		log.Printf("Received message with message: %s", msg.Body)
+	}
 }
 
 /**

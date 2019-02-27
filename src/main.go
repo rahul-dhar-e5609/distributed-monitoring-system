@@ -31,12 +31,15 @@ func client() {
 	//before any other operation on the Connection or Channel
 	msgs, err := ch.Consume(
 		q.Name, //queue string,
-		"",     //consumer string,
-		true,   //autoAck bool,
-		false,  //exclusive bool,
-		false,  //noLocal bool,
-		false,  //noWait bool,
-		nil)    //args amqp.Table)
+		"",     //consumer string, uniquely identifies the connection to the queue
+		//used internally by rabbitmq to determine who is listening to the queue
+		//inportant when multiple clients are listening from the same queue
+		true,  //autoAck bool, //autommatically ack recipt of a message
+		false, //exclusive bool, //tells if only consumer
+		false, //noLocal bool, //prevents rabbit from sending messages to
+		//clients that are on the same network as the server
+		false, //noWait bool,
+		nil)   //args amqp.Table)
 
 	failOnError(err, "Failed to register a consumer")
 

@@ -1,6 +1,9 @@
 package dto
 
-import "time"
+import (
+	"encoding/gob"
+	"time"
+)
 
 //SensorMessage carries information to the coordinator
 type SensorMessage struct {
@@ -18,4 +21,18 @@ type SensorMessage struct {
 	//messages, this helps understand
 	//when the reading was actually taken
 	Timestamp time.Time
+}
+
+//can't send a raw type directly into rabbit.
+//need to encode the data in some way
+//Could have used json or protocol buffers for they are
+//language neutral formats, but insted using gob (more efficient)
+//as the application is pure GO.
+func init() {
+	//Registering gob package so it knows how
+	//to work when we call on it later.
+
+	//Every consumer of the package, can now rely on the SensorMessage
+	//object being ready to send over the wire.
+	gob.Register(SensorMessage{})
 }

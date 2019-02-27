@@ -7,6 +7,9 @@
 package main
 
 import (
+	"bytes"
+	"distributed/dto"
+	"encoding/gob"
 	"flag"
 	"log"
 	"math/rand"
@@ -60,9 +63,26 @@ func main() {
 	//channel that responds after the above created duration
 	signal := time.Tick(dur)
 
+	//buffer for encoding the message for transmission
+	buf := new(bytes.Buffer)
+
+	//to encode the message firectly to the buffer
+	enc := gob.NewEncoder(buf)
+
 	for range signal {
 		//generating the values
 		calcValue()
+		reading := dto.SensorMessage{
+			Name:      *name,
+			Value:     value,
+			Timestamp: time.Now(),
+		}
+		//reseting buffer for new signal message
+		//any previous data gets removed and buffers
+		//pointer is reset to its initial position
+		buf.Reset()
+		//encoding the reading
+		enc.Encode(reading)
 		log.Printf("Reading sent. Value: %v\n", value)
 	}
 }

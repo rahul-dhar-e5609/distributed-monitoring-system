@@ -80,17 +80,18 @@ func main() {
 	// The queue on which the sensor module sends the name of the queue
 	// whenever a new queue comes online, so that the coordinators able to
 	// understand that they need to take messages from this new queue
-	sensorQueue := quitls.GetQueue(quits.SesnsorListQueue, ch)
+	sensorQueue := qutils.GetQueue(qutils.SensorListQueue, ch)
 
 	// message to sensor queue should be the name of the newly generated queue
-	msg := amqp.Publishing{Body []byte (*name)}
+	msg := amqp.Publishing{
+		Body: []byte(*name),
+	}
 	ch.Publish(
 		"",
-		sensorQueue.Name
+		sensorQueue.Name,
 		false,
 		false,
 		msg)
-	
 
 	//miliseconds per cycle
 	//eg. 5 cycles / sec = 200 miliseconds / cycle
@@ -125,12 +126,11 @@ func main() {
 		}
 
 		ch.Publish(
-			"", //exchange string, | Using default
+			"",             //exchange string, | Using default
 			dataQueue.Name, //key string, | Routing key for the queue
-			false, //mandatory bool,
-			false, //immediate bool,
-			msg)//msg amqp.Publishing
-		
+			false,          //mandatory bool,
+			false,          //immediate bool,
+			msg)            //msg amqp.Publishing
 
 		log.Printf("Reading sent. Value: %v\n", value)
 	}

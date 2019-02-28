@@ -17,6 +17,9 @@ import (
 	"time"
 )
 
+//Broker's input listener
+var url = "amqp://guest:guest@rahul.dhar:5672"
+
 //flags to read the parameters in to config the sensors from the command line.
 
 //unique name of each sensor

@@ -11,6 +11,8 @@ import (
 	"github.com/streadway/amqp"
 )
 
+const SensorListQueue = "SensorList"
+
 // GetChannel is responsible for instantiating the connection
 // and channel to communicate with the Message Broker.
 // Not adding the get queue here in public function get channel
@@ -27,17 +29,19 @@ func GetChannel(url string) (*amqp.Connection, *amqp.Channel) {
 	return conn, ch
 }
 
+// GetQueue is responsible for declaring a new Queue
+// using a Channel
 // @param name | Routing key for the queue
 // @param ch | Channel to declare the Queue
-func getQueue(name string, ch *amqp.Channel) *amqp.Queue {
+func GetQueue(name string, ch *amqp.Channel) *amqp.Queue {
 	q, err := ch.QueueDeclare(
-		name, //name string,
+		name,  //name string,
 		false, //durable bool,
 		false, //autoDelete bool,
 		false, //exclusive bool,
 		false, //noWait bool,
-		nil //args amqp.Table | Using the default exchange, no need of any other configuration information 
-	)
+		nil)   //args amqp.Table | Using the default exchange, no need of any other configuration information
+
 	failOnError(err, "Failed to declare queue")
 
 	return &q

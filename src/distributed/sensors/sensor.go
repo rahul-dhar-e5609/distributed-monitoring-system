@@ -9,12 +9,15 @@ package main
 import (
 	"bytes"
 	"distributed/dto"
+	"distributed/qutils"
 	"encoding/gob"
 	"flag"
 	"log"
 	"math/rand"
 	"strconv"
 	"time"
+
+	"github.com/streadway/amqp"
 )
 
 //Broker's input listener
@@ -59,6 +62,36 @@ var nom = (*max-*min)/2 + *min
 func main() {
 	flag.Parse()
 
+	//Connection and channel for message broker
+	conn, ch := qutils.GetChannel(url)
+	defer conn.Close()
+	defer ch.Close()
+
+	// Fetching the queue using the channel and routing key
+	// The queue needs to be declared here even though we are not gonna
+	// write to the queue directly. Rabbit MQ receives messages and
+	// exchanges and uses their configuration and information within
+	// the message to determine which queues to deliver to, so technically
+	// only the routing key needs to be given when publishing.
+	// However that isnt enough to ensure that a queue with that
+	// routing key actually exists. By declaring the queue here, we can ensure that,
+	dataQueue := qutils.GetQueue(*name, ch)
+
+	// The queue on which the sensor module sends the name of the queue
+	// whenever a new queue comes online, so that the coordinators able to
+	// understand that they need to take messages from this new queue
+	sensorQueue := quitls.GetQueue(quits.SesnsorListQueue, ch)
+
+	// message to sensor queue should be the name of the newly generated queue
+	msg := amqp.Publishing{Body []byte (*name)}
+	ch.Publish(
+		"",
+		sensorQueue.Name
+		false,
+		false,
+		msg)
+	
+
 	//miliseconds per cycle
 	//eg. 5 cycles / sec = 200 miliseconds / cycle
 	dur, _ := time.ParseDuration(strconv.Itoa(1000/int(*freq)) + "ms")
@@ -86,6 +119,19 @@ func main() {
 		buf.Reset()
 		//encoding the reading
 		enc.Encode(reading)
+
+		msg := amqp.Publishing{
+			Body: buf.Bytes(),
+		}
+
+		ch.Publish(
+			"", //exchange string, | Using default
+			dataQueue.Name, //key string, | Routing key for the queue
+			false, //mandatory bool,
+			false, //immediate bool,
+			msg)//msg amqp.Publishing
+		
+
 		log.Printf("Reading sent. Value: %v\n", value)
 	}
 }

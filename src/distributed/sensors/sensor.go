@@ -75,15 +75,19 @@ func main() {
 	// The queue on which the sensor module sends the name of the queue
 	// whenever a new queue comes online, so that the coordinators able to
 	// understand that they need to take messages from this new queue
-	sensorQueue := qutils.GetQueue(qutils.SensorListQueue, ch)
+	// @deprecated
+	// was created to ensure that messages are received
+	// this will now be the responsibility of the consumers
+	// since they will now have to create thier own queue to listen on this exchange
+	// sensorQueue := qutils.GetQueue(qutils.SensorListQueue, ch)
 
 	// message to sensor queue should be the name of the newly generated queue
 	msg := amqp.Publishing{
 		Body: []byte(*name),
 	}
 	ch.Publish(
-		"",
-		sensorQueue.Name,
+		"amq.fanout", // "", changing from default ro fanout exchange
+		"",           // sensorQueue.Name, changed to empty string as wont be needed ny fanout exchange
 		false,
 		false,
 		msg)
@@ -98,7 +102,7 @@ func main() {
 	//buffer for encoding the message for transmission
 	buf := new(bytes.Buffer)
 
-	//to encode the message firectly to the buffer
+	//to encode the message directly to the buffer
 	enc := gob.NewEncoder(buf)
 
 	for range signal {

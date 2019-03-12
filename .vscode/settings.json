@@ -1,0 +1,8 @@
+{
+  "go.gopath": "D:/prac/golang/distributed monitoring system",
+  "go.inferGopath": true,
+  "terminal.integrated.env.windows": {
+    "GOPATH": "D:/prac/golang/distributed monitoring system",
+    "GOBIN": "D:/prac/golang/distributed monitoring system/bin"
+  }
+}

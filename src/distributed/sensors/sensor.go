@@ -1,9 +1,6 @@
-/**
- * Sensor application
- *
- * Stand alone application for mocking
- * a real time sensor.
- */
+// Sensor application
+// Stand alone application for mocking
+// a real time sensor.
 package main
 
 import (
@@ -52,13 +49,11 @@ var value = r.Float64()*(*max-*min) + *min
 //nominal value to bias the step so that it trends towards it.
 var nom = (*max-*min)/2 + *min
 
-/**
- * Periodically generate data points that
- * drift between the maximum and minimum
- * values that are provided to the sensor
- * with a bias towards putting the data points
- * near the average value.
- */
+// Periodically generate data points that
+// drift between the maximum and minimum
+// values that are provided to the sensor
+// with a bias towards putting the data points
+// near the average value.
 func main() {
 	flag.Parse()
 
@@ -136,9 +131,7 @@ func main() {
 	}
 }
 
-/**
- * Responsible for calculating the data point.
- */
+// Responsible for calculating the data point.
 func calcValue() {
 	//maximum value the data point can decrease or increase
 	var maxStep, minStep float64

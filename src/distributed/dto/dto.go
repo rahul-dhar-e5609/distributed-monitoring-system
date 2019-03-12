@@ -1,3 +1,7 @@
+// Package dto This holds the definition
+// for any types that we want to send through
+// the message broker.
+// Data Transfer Objects
 package dto
 
 import (

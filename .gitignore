@@ -1,4 +1,4 @@
-.vscode
+#.vscode
 bin
 pkg
 src/github.com

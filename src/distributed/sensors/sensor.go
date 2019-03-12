@@ -117,6 +117,10 @@ func main() {
 		//any previous data gets removed and buffers
 		//pointer is reset to its initial position
 		buf.Reset()
+
+		// needs to be recreated every tiem it is used
+		enc = gob.NewEncoder(buf)
+
 		//encoding the reading
 		enc.Encode(reading)
 

@@ -24,6 +24,9 @@ type QueueListener struct {
 	// to prevent registering a seneor twice, to close of listener if associated sensor goes offline.
 	// map that points to the Delivery objects
 	sources map[string]<-chan amqp.Delivery //registry of all the sources that the coordinator is listening on
+
+	// wiring the event aggregator in to the queue listener
+	ea *EventAggregator
 }
 
 // NewQueueListener is a constructor function
@@ -33,6 +36,7 @@ func NewQueueListener() *QueueListener {
 	//instantiating new object of queuelistener
 	ql := QueueListener{
 		sources: make(map[string]<-chan amqp.Delivery),
+		ea:      NewEventAggregator(),
 	}
 
 	//populating the Connection and Channel fields
@@ -107,5 +111,21 @@ func (ql *QueueListener) AddListener(msgs <-chan amqp.Delivery) {
 		d.Decode(sd)
 
 		fmt.Printf("Received message: %v\n", sd)
+
+		// Creating event data object and populating
+		// it with the data from the sensor message
+		// object
+		ed := EventData{
+			Name:      sd.Name,
+			Timestamp: sd.Timestamp,
+			Value:     sd.Value,
+		}
+
+		// Publishing to all the consumers so that
+		// they now know what just haappened
+		//
+		// adding routing key (name of the sensor) so that each
+		// one publishes a usique event
+		ql.ea.PublishEvent("MessageReceived_"+msg.RoutingKey, ed)
 	}
 }

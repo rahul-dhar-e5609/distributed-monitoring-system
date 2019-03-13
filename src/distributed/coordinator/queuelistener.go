@@ -18,11 +18,11 @@ const url = "amqp://guest:guest@localhost:5672"
 // recevices the messages and eventually transales them to events
 // in an EventAggregator
 type QueueListener struct {
-	conn *amqp.Connection //for getting messages
-	ch   *amqp.Channel    //for getting messages
+	conn *amqp.Connection // for getting messages
+	ch   *amqp.Channel    // for getting messages
 
-	//to prevent registering a seneor twice, to close of listener if associated sensor goes offline.
-	//map that points to the Delivery objects
+	// to prevent registering a seneor twice, to close of listener if associated sensor goes offline.
+	// map that points to the Delivery objects
 	sources map[string]<-chan amqp.Delivery //registry of all the sources that the coordinator is listening on
 }
 
@@ -56,7 +56,7 @@ func (ql *QueueListener) ListenForNewSource() {
 		false,        // noWait bool,
 		nil)          // args amqp.Table
 
-	//Receiver for consuming the messages
+	// Receiver for consuming the messages
 	msgs, _ := ql.ch.Consume(
 		q.Name, //name of the queue bound to the fanout exchange
 		"",
@@ -66,7 +66,7 @@ func (ql *QueueListener) ListenForNewSource() {
 		false,
 		nil)
 
-	//Channel in place, waiting for the messages on the msgs channel
+	// Channel in place, waiting for the messages on the msgs channel
 	for msg := range msgs {
 		// new message mesans a new sensor is online
 		// and is ready to send the readings.
@@ -79,8 +79,8 @@ func (ql *QueueListener) ListenForNewSource() {
 			false,
 			false,
 			nil)
-		//Sending data in a default exchange, this is a direct exchange
-		//and will only deliver a message to a single receiver. That means
+		// Sending data in a default exchange, this is a direct exchange
+		// and will only deliver a message to a single receiver. That means
 		// when multiple coordinatos are registered, they share access to the queues
 		// when this happens, rabbitmq will take turns delivering to each registers
 		// receiver in turn. This lets us scale the coordinators as the system grows

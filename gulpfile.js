@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var path = require('path');
 var shell = require('gulp-shell');
 
-var goPath = 'src/mypackage/**/*.go';
+var goPath = 'src/distributed/**/*.go';
 
 gulp.task('compilepkg', function() {
   return gulp.src(goPath, {read: false})

@@ -99,21 +99,18 @@ func (ql *QueueListener) ListenForNewSource() {
 
 	// dicovering sensors here, as we know for sure
 	// that coordinator is expecting msgs from sensors
-	//ql.DiscoverSensors()
+	ql.DiscoverSensors()
+	fmt.Println("listening for new sources")
 
 	// Channel in place, waiting for the messages on the msgs channel
 	for msg := range msgs {
-		// new message mesans a new sensor is online
-		// and is ready to send the readings.
-		// usind consume method to get access to that queue.
-		sourceChan, _ := ql.ch.Consume(
-			string(msg.Body), //name is in the msg body for the data queue.
-			"",
-			true,
-			false,
-			false,
-			false,
-			nil)
+		fmt.Printf("Message %v", msg)
+		// updated the if guard below to surround all
+		// of the for-loops contents to prevent
+		// same sensor being registered multiple
+		// times with RabbitMQ
+		//
+		//
 		// Sending data in a default exchange, this is a direct exchange
 		// and will only deliver a message to a single receiver. That means
 		// when multiple coordinatos are registered, they share access to the queues
@@ -123,6 +120,18 @@ func (ql *QueueListener) ListenForNewSource() {
 
 		//checking if new message has already been registered
 		if ql.sources[string(msg.Body)] == nil {
+			fmt.Println("new source discovered")
+			// new message mesans a new sensor is online
+			// and is ready to send the readings.
+			// usind consume method to get access to that queue.
+			sourceChan, _ := ql.ch.Consume(
+				string(msg.Body), //name is in the msg body for the data queue.
+				"",
+				true,
+				false,
+				false,
+				false,
+				nil)
 			ql.sources[string(msg.Body)] = sourceChan
 
 			go ql.AddListener(sourceChan)

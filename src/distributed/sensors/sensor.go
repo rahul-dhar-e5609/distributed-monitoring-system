@@ -9,6 +9,7 @@ import (
 	"distributed/qutils"
 	"encoding/gob"
 	"flag"
+	"fmt"
 	"log"
 	"math/rand"
 	"strconv"
@@ -150,6 +151,7 @@ func main() {
 // listening and receiving the discovery requests
 // from the coordinators
 func listenForDiscoveryRequests(name string, ch *amqp.Channel) {
+	fmt.Printf("Listening for discovery requests on queue %v\n", name)
 	// receiving discovery requests
 	// from the coordinators.
 	msgs, _ := ch.Consume(name, "", true, false, false, false, nil)
@@ -165,6 +167,7 @@ func listenForDiscoveryRequests(name string, ch *amqp.Channel) {
 // the presece of data queue when the
 // sensor starts up
 func publishQueueName(ch *amqp.Channel) {
+	fmt.Printf("Publishing queue name %v\n", *name)
 	// message to sensor queue should be the name of the newly generated queue
 	msg := amqp.Publishing{
 		Body: []byte(*name),

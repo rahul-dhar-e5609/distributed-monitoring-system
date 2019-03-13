@@ -81,16 +81,23 @@ func main() {
 	// since they will now have to create thier own queue to listen on this exchange
 	// sensorQueue := qutils.GetQueue(qutils.SensorListQueue, ch)
 
-	// message to sensor queue should be the name of the newly generated queue
-	msg := amqp.Publishing{
-		Body: []byte(*name),
-	}
-	ch.Publish(
-		"amq.fanout", // "", changing from default ro fanout exchange
-		"",           // sensorQueue.Name, changed to empty string as wont be needed ny fanout exchange
+	// publishing presence of a new queue
+	publishQueueName(ch)
+
+	// creating a new queue
+	discoveryQueue := qutils.GetQueue("", ch)
+
+	// binding the above created queue too the sensor discovery package
+	// so that it knows when the coordinators make a discovery request
+	ch.QueueBind(
+		discoveryQueue.Name,            //name
+		"",                             // key
+		qutils.SensorDiscoveryExchange, //exchange
 		false,
-		false,
-		msg)
+		nil)
+
+	//listen for discovery request
+	go listenForDiscoveryRequests(discoveryQueue.Name, ch)
 
 	//miliseconds per cycle
 	//eg. 5 cycles / sec = 200 miliseconds / cycle
@@ -137,6 +144,37 @@ func main() {
 
 		log.Printf("Reading sent. Value: %v\n", value)
 	}
+}
+
+// listenForDiscoveryRequests is responsible for
+// listening and receiving the discovery requests
+// from the coordinators
+func listenForDiscoveryRequests(name string, ch *amqp.Channel) {
+	// receiving discovery requests
+	// from the coordinators.
+	msgs, _ := ch.Consume(name, "", true, false, false, false, nil)
+
+	for range msgs {
+		// publishing name of queue on
+		// fanout exchange.
+		publishQueueName(ch)
+	}
+}
+
+// This func is responsible for publishing
+// the presece of data queue when the
+// sensor starts up
+func publishQueueName(ch *amqp.Channel) {
+	// message to sensor queue should be the name of the newly generated queue
+	msg := amqp.Publishing{
+		Body: []byte(*name),
+	}
+	ch.Publish(
+		"amq.fanout", // "", changing from default ro fanout exchange
+		"",           // sensorQueue.Name, changed to empty string as wont be needed ny fanout exchange
+		false,
+		false,
+		msg)
 }
 
 // Responsible for calculating the data point.

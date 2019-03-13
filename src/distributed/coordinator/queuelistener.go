@@ -45,6 +45,33 @@ func NewQueueListener() *QueueListener {
 	return &ql
 }
 
+// DiscoverSensors is responsible for instantiating the fanout
+// exchange to which the coordinators make a discovery requests
+// to which the sensors respond by publishing the name of its
+// data queues to the fanout exchange.
+func (ql *QueueListener) DiscoverSensors() {
+	// Setting up the new exchange
+	ql.ch.ExchangeDeclare(
+		qutils.SensorDiscoveryExchange, // name string, // name of the exchange that gets created
+		"fanout",                       // kind string, // type which can be direct, topic, header or fanout
+		false,                          // durable bool,	//sets up a durable queue or not
+		false,                          // autodelete bool,	// if the exchange should be deleted in the event that there are no bindings present
+		false,                          // internal bool,	true, if be need to reject external publishing requests
+		false,                          // nowait bool,
+		nil)                            // args Table)
+
+	// exchange has been set up and now coordinators can publish to it.
+	// as there is no meaningful info to send, sending an expty publishing
+	// to the exchange
+	ql.ch.Publish(
+		qutils.SensorDiscoveryExchange, // exchange string,
+		"",                             // key string,
+		false,                          // mandatory bool,
+		false,                          // immediate bool,
+		amqp.Publishing{})              // msg Publishing)
+
+}
+
 // ListenForNewSource is responsible for
 // letting the QueueListener discover new sensors
 func (ql *QueueListener) ListenForNewSource() {
@@ -69,6 +96,10 @@ func (ql *QueueListener) ListenForNewSource() {
 		false,
 		false,
 		nil)
+
+	// dicovering sensors here, as we know for sure
+	// that coordinator is expecting msgs from sensors
+	//ql.DiscoverSensors()
 
 	// Channel in place, waiting for the messages on the msgs channel
 	for msg := range msgs {

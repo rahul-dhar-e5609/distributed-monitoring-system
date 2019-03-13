@@ -11,7 +11,12 @@ import (
 	"github.com/streadway/amqp"
 )
 
-const SensorListQueue = "SensorList"
+// SensorDiscoveryExchange is a constant that represents
+// the name of the fanout exchange that the coordinators
+// make a discovery request, to which the sensors respond
+// by publishing the name of the data queues to the fanout
+// exchange.
+const SensorDiscoveryExchange = "SensorDiscovery"
 
 // GetChannel is responsible for instantiating the connection
 // and channel to communicate with the Message Broker.

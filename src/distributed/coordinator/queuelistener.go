@@ -124,6 +124,9 @@ func (ql *QueueListener) ListenForNewSource() {
 		//checking if new message has already been registered
 		if ql.sources[string(msg.Body)] == nil {
 			fmt.Println("new source discovered")
+
+			// Publishing an event every time a new data source is discovered.
+			ql.ea.PublishEvent("DataSourceDiscovered", string(msg.Body))
 			// new message mesans a new sensor is online
 			// and is ready to send the readings.
 			// usind consume method to get access to that queue.

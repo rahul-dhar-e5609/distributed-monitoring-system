@@ -38,14 +38,15 @@ func GetChannel(url string) (*amqp.Connection, *amqp.Channel) {
 // using a Channel
 // @param name | Routing key for the queue
 // @param ch | Channel to declare the Queue
-func GetQueue(name string, ch *amqp.Channel) *amqp.Queue {
+// @param autoDelete | boolean that tells the amqp package to auto delete any temp queues that dont have any consumers registered on them
+func GetQueue(name string, ch *amqp.Channel, autoDelete bool) *amqp.Queue {
 	q, err := ch.QueueDeclare(
-		name,  //name string,
-		false, //durable bool,
-		false, //autoDelete bool,
-		false, //exclusive bool,
-		false, //noWait bool,
-		nil)   //args amqp.Table | Using the default exchange, no need of any other configuration information
+		name,       //name string,
+		false,      //durable bool,
+		autoDelete, //autoDelete bool,
+		false,      //exclusive bool,
+		false,      //noWait bool,
+		nil)        //args amqp.Table | Using the default exchange, no need of any other configuration information
 
 	failOnError(err, "Failed to declare queue")
 

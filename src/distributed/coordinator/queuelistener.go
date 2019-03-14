@@ -75,7 +75,10 @@ func (ql *QueueListener) DiscoverSensors() {
 // ListenForNewSource is responsible for
 // letting the QueueListener discover new sensors
 func (ql *QueueListener) ListenForNewSource() {
-	q := qutils.GetQueue("", ql.ch) // blank name for queue gives a random (unique) name to the queue (no conflicts when multiple coordinators are running)
+	// listening for data queue names that are being published by the sensors
+	// when they come online or in response to a discovery request,
+	// passing true for auto delete so that these temp queues are cleaned up.
+	q := qutils.GetQueue("", ql.ch, true) // blank name for queue gives a random (unique) name to the queue (no conflicts when multiple coordinators are running)
 
 	// By default the queue generated is bound to the default exchange.
 	// the sensors publish to a fanout exchange, therefore, q needs to

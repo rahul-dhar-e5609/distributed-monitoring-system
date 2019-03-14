@@ -71,7 +71,7 @@ func main() {
 	// only the routing key needs to be given when publishing.
 	// However that isnt enough to ensure that a queue with that
 	// routing key actually exists. By declaring the queue here, we can ensure that,
-	dataQueue := qutils.GetQueue(*name, ch)
+	dataQueue := qutils.GetQueue(*name, ch, false) // passing false for autodelete as we dont want amqp to delete these queues if they dont have consumers registerd on them
 
 	// The queue on which the sensor module sends the name of the queue
 	// whenever a new queue comes online, so that the coordinators able to
@@ -86,7 +86,7 @@ func main() {
 	publishQueueName(ch)
 
 	// creating a new queue
-	discoveryQueue := qutils.GetQueue("", ch)
+	discoveryQueue := qutils.GetQueue("", ch, true) // listening for discovery request from the coordinators, each sensor should start a unique one every time, therefore need to clean up the ones that dont have any consumers registered
 
 	// binding the above created queue too the sensor discovery package
 	// so that it knows when the coordinators make a discovery request

@@ -14,3 +14,4 @@ The data routes are published to the default exchange, which is a direct exchang
 
 - **Discovery route**: All the coordinators should know when a sensor comes online, direct exchange fails this requirement, instead a fanout exchange can inform all the attached queues about the received message, doing so, all the coordinators can know about the received message.
 - **Fanout Exchange for lazy coordinators**: Need another fanout exchange for the coordinators that spawned after all the sensors got instantiated. The coordinators that spawned late have no way to know about the sensors that got instantiated, there should be a fanout exchange that flows reverse to other data flows. The coordinators can then make a discovery request to the exchange, that message then fans out to all the sensors which then respond by publishing there data queue's name to the fanout exchange.
+- **Event Bus**: Modify the Event Aggregator to use channels instead of event pattern.

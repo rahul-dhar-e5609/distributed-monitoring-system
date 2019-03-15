@@ -2,4 +2,4 @@
 bin
 pkg
 src/github.com
-*.exe
+sensor.exe

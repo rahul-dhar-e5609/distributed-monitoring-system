@@ -1,6 +1,6 @@
 # Distributed Monitoring System
 
-> A distributed programming in Go using RabbitMQ Exchanges and Queues for communication among data generators, data coordinators and data consumers.
+> A distributed system in Go using RabbitMQ Exchanges and Queues for monitoring the communications among data generators, data coordinators and data consumers.
 
 The queue discovery was initially a direct exchange. The sensors published two kinds of messages.
 

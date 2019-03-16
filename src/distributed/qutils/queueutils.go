@@ -18,6 +18,8 @@ import (
 // exchange.
 const SensorDiscoveryExchange = "SensorDiscovery"
 
+const PersistReadingsQueue = "PersistReading"
+
 // GetChannel is responsible for instantiating the connection
 // and channel to communicate with the Message Broker.
 // Not adding the get queue here in public function get channel

@@ -32,11 +32,11 @@ type QueueListener struct {
 // NewQueueListener is a constructor function
 // that ensures that the QueueListener is
 // properly initialized
-func NewQueueListener() *QueueListener {
+func NewQueueListener(ea *EventAggregator) *QueueListener {
 	//instantiating new object of queuelistener
 	ql := QueueListener{
 		sources: make(map[string]<-chan amqp.Delivery),
-		ea:      NewEventAggregator(),
+		ea:      ea,
 	}
 
 	//populating the Connection and Channel fields

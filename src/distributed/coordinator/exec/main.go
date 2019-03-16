@@ -5,8 +5,16 @@ import (
 	"fmt"
 )
 
+var dc *coordinator.DatabaseConsumer
+
 func main() {
-	ql := coordinator.NewQueueListener()
+
+	// wiring event aggreagtor to coordinator package
+	ea := coordinator.NewEventAggregator()
+	// instantiating package level databse consumer
+	dc := coordinator.NewDataConsumer(ea)
+
+	ql := coordinator.NewQueueListener(ea)
 	go ql.ListenForNewSource()
 
 	var a string

@@ -11,13 +11,13 @@ import (
 	"time"
 )
 
-// Responsible for listening to events
+const maxRate = 5 * time.Second
+
+// DatabaseConsumer is a struct which is
+// responsible for listening to events
 // that are being emitted throughtout the
 // system and decide which ones to forward
 // to the database manager
-
-const maxRate = 5 * time.Second
-
 type DatabaseConsumer struct {
 	er EventRaiser //  we can pass callback without this type knowing about how to publish events itself
 
@@ -28,10 +28,10 @@ type DatabaseConsumer struct {
 	sources []string
 }
 
-// NewDataConsumer is a constructor function
+// NewDatabaseConsumer is a constructor function
 // for DatabaseConsumer, using EventRaiser to
 // add listners (Dependency Injection)
-func NewDataConsumer(er EventRaiser) *DatabaseConsumer {
+func NewDatabaseConsumer(er EventRaiser) *DatabaseConsumer {
 
 	dc := DatabaseConsumer{
 		er: er,

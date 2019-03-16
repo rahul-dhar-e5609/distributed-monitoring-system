@@ -12,7 +12,7 @@ func main() {
 	// wiring event aggreagtor to coordinator package
 	ea := coordinator.NewEventAggregator()
 	// instantiating package level databse consumer
-	dc := coordinator.NewDataConsumer(ea)
+	dc = coordinator.NewDatabaseConsumer(ea)
 
 	ql := coordinator.NewQueueListener(ea)
 	go ql.ListenForNewSource()

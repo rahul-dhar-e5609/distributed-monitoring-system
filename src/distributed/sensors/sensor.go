@@ -43,12 +43,11 @@ var stepSize = flag.Float64("step", 0.1, "maximum allowable change per measureme
 //rand.NewSource needs a seed
 var r = rand.New(rand.NewSource(time.Now().UnixNano()))
 
-//initial value of the sensor
-var value = r.Float64()*(*max-*min) + *min
+//declared value of the sensor
+var value float64
 
-//data point changes with every time step by a maximum of stepsize
-//nominal value to bias the step so that it trends towards it.
-var nom = (*max-*min)/2 + *min
+// declared nomincal variable
+var nom float64
 
 // Periodically generate data points that
 // drift between the maximum and minimum
@@ -57,6 +56,14 @@ var nom = (*max-*min)/2 + *min
 // near the average value.
 func main() {
 	flag.Parse()
+
+	// should be instantiated after the flags are parsed so that the
+	// correct values for the min and max flags are used.
+	value = r.Float64()*(*max-*min) + *min
+
+	//data point changes with every time step by a maximum of stepsize
+	//nominal value to bias the step so that it trends towards it.
+	nom = (*max-*min)/2 + *min
 
 	//Connection and channel for message broker
 	conn, ch := qutils.GetChannel(url)

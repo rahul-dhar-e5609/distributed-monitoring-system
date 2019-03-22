@@ -20,8 +20,14 @@ const SensorDiscoveryExchange = "SensorDiscovery"
 
 const PersistReadingsQueue = "PersistReading"
 
+// Broadcasts name of the sensors that are being discovered
 const WebappSourceExchange = "WebappSources"
+
+// Sends out readings to the web application
 const WebappReadingsExchange = "WebappReading"
+
+// Used by one of the web apps to let the coordinator know
+// that it needs a list of available sources
 const WebappDiscoveryQueue = "WebappDiscovery"
 
 // GetChannel is responsible for instantiating the connection

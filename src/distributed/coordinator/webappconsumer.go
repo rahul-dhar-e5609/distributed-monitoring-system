@@ -5,6 +5,7 @@ import (
 	"distributed/dto"
 	"distributed/qutils"
 	"encoding/gob"
+
 	"github.com/streadway/amqp"
 )
 
@@ -52,10 +53,11 @@ func NewWebappConsumer(er EventRaiser) *WebappConsumer {
 }
 
 func (wc *WebappConsumer) ListenForDiscoveryRequests() {
+	// for requeseting a list of sensors available
 	q := qutils.GetQueue(qutils.WebappDiscoveryQueue, wc.ch, false)
 	msgs, _ := wc.ch.Consume(
 		q.Name, //queue string,
-		"",     //consumer string,
+		"",     //consumer string, // defalult exchange
 		true,   //autoAck bool,
 		false,  //exclusive bool,
 		false,  //noLocal bool,
@@ -70,11 +72,12 @@ func (wc *WebappConsumer) ListenForDiscoveryRequests() {
 }
 
 func (wc *WebappConsumer) SendMessageSource(src string) {
+	// all the web apps will be informed of each source
 	wc.ch.Publish(
-		qutils.WebappSourceExchange, //exchange string,
-		"",    //key string,
-		false, //mandatory bool,
-		false, //immediate bool,
+		qutils.WebappSourceExchange,        //exchange string,
+		"",                                 //key string,
+		false,                              //mandatory bool,
+		false,                              //immediate bool,
 		amqp.Publishing{Body: []byte(src)}) //msg amqp.Publishing)
 }
 
@@ -87,6 +90,7 @@ func (wc *WebappConsumer) SubscribeToDataEvent(eventName string) {
 
 	wc.sources = append(wc.sources, eventName)
 
+	// informs web app of new source
 	wc.SendMessageSource(eventName)
 
 	wc.er.AddListener("MessageReceived_"+eventName,
@@ -107,11 +111,12 @@ func (wc *WebappConsumer) SubscribeToDataEvent(eventName string) {
 				Body: buf.Bytes(),
 			}
 
+			// a fanout exchange, all the web apps listening get a copy of the reading
 			wc.ch.Publish(
 				qutils.WebappReadingsExchange, //exchange string,
-				"",    //key string,
-				false, //mandatory bool,
-				false, //immediate bool,
-				msg)   //msg amqp.Publishing)
+				"",                            //key string,
+				false,                         //mandatory bool,
+				false,                         //immediate bool,
+				msg)                           //msg amqp.Publishing)
 		})
 }

@@ -6,6 +6,7 @@ import (
 )
 
 var dc *coordinator.DatabaseConsumer
+var wc *coordinator.WebappConsumer
 
 func main() {
 
@@ -13,6 +14,9 @@ func main() {
 	ea := coordinator.NewEventAggregator()
 	// instantiating package level databse consumer
 	dc = coordinator.NewDatabaseConsumer(ea)
+
+	// instantiating package level web app consumer
+	wc = coordinator.NewWebappConsumer(ea)
 
 	ql := coordinator.NewQueueListener(ea)
 	go ql.ListenForNewSource()

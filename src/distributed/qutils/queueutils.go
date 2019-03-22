@@ -20,6 +20,10 @@ const SensorDiscoveryExchange = "SensorDiscovery"
 
 const PersistReadingsQueue = "PersistReading"
 
+const WebappSourceExchange = "WebappSources"
+const WebappReadingsExchange = "WebappReading"
+const WebappDiscoveryQueue = "WebappDiscovery"
+
 // GetChannel is responsible for instantiating the connection
 // and channel to communicate with the Message Broker.
 // Not adding the get queue here in public function get channel

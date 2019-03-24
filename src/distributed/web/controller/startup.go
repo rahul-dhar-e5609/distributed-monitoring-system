@@ -6,6 +6,8 @@ import (
 
 var ws = newWebsocketController()
 
+// Initialize function is responsible for
+// initializing the web app.
 func Initialize() {
 	registerRoutes()
 

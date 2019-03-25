@@ -11,7 +11,7 @@ var db *sql.DB
 func init() {
 	var err error
 	db, err = sql.Open("postgres",
-		"postres://distributed:distributed@localhost/distributed?sslmode=disable")
+		"postres://postgres:password@localhost/distributed?sslmode=disable")
 	if err != nil {
 		panic(err.Error())
 	}

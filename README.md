@@ -1,5 +1,9 @@
 # Distributed Monitoring System
 
+https://goreportcard.com/badge/github.com/IAmRDhar/distributed-monitoring-system
+
+[![Go Report Card](https://goreportcard.com/badge/github.com/IAmRDhar/distributed-monitoring-system)](https://goreportcard.com/report/github.com/IAmRDhar/distributed-monitoring-system)
+
 > A distributed system in Go using RabbitMQ Exchanges and Queues for monitoring the communications among data generators, data coordinators and data consumers.
 
 The queue discovery was initially a direct exchange. The sensors published two kinds of messages.

@@ -1,6 +1,9 @@
 # Distributed Monitoring System
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/IAmRDhar/distributed-monitoring-system)](https://goreportcard.com/report/github.com/IAmRDhar/distributed-monitoring-system)
+[![Go Report Card](https://goreportcard.com/badge/github.com/IAmRDhar/distributed-monitoring-system)]
+(https://goreportcard.com/report/github.com/IAmRDhar/distributed-monitoring-system)
+
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/c757749017ee4fffbed7e55f893663e3)](https://www.codacy.com/gh/IAmRDhar/distributed-monitoring-system/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=IAmRDhar/distributed-monitoring-system&amp;utm_campaign=Badge_Grade)
 
 > A distributed system in Go using RabbitMQ Exchanges and Queues for monitoring the communications among data generators, data coordinators and data consumers.
 
